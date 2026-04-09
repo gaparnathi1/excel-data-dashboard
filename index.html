@@ -1,0 +1,1650 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Data Dashboard</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --header-bg: #343a40;
+            --header-text: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --header-bg: #2d2d2d;
+            --header-text: #ffffff;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin-top: 50px;
+            margin-bottom: 50px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+
+        .header-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            border-radius: 15px 15px 0 0;
+            margin: -2rem -2rem 2rem -2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .update-info {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .theme-toggle {
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: transform 0.2s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        table.dataTable {
+            border-collapse: collapse !important;
+            width: 100% !important;
+        }
+
+        .highlight {
+            background-color: yellow;
+            color: black;
+        }
+
+        [data-theme="dark"] .highlight {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Custom Table Styles */
+        .table {
+            color: var(--text-color);
+        }
+
+        .table-striped > tbody > tr:nth-of-type(odd) > * {
+            --bs-table-accent-bg: rgba(0, 0, 0, 0.02);
+            color: var(--text-color);
+        }
+
+        [data-theme="dark"] .table-striped > tbody > tr:nth-of-type(odd) > * {
+            --bs-table-accent-bg: rgba(255, 255, 255, 0.05);
+        }
+
+        .dt-buttons .btn {
+            border-radius: 8px;
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container fade-in">
+    <div class="card">
+        <div class="header-section">
+            <div>
+                <h2 class="mb-1"><i class="fas fa-table me-2"></i>Data Dashboard</h2>
+                <div class="update-info">
+                    <i class="far fa-clock me-1"></i>Last Updated: <span id="lastUpdated">2026-04-09 17:53:46</span>
+                </div>
+            </div>
+            <div class="d-flex align-items-center">
+                <div class="theme-toggle me-3" onclick="toggleTheme()" title="Toggle Dark Mode">
+                    <i class="fas fa-moon" id="themeIcon"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="table-responsive">
+            <table id="dataTable" class="table table-striped table-hover dt-responsive nowrap" style="width:100%">
+                <thead>
+                    <tr>
+                        
+                        <th>Name</th>
+                        
+                        <th>Subject</th>
+                        
+                        <th>Obtained Marks</th>
+                        
+                        <th>Percentage</th>
+                        
+                        <th>Result</th>
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        
+                        <td>Student_1</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>29</td>
+                        
+                        <td>29</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_2</td>
+                        
+                        <td>History</td>
+                        
+                        <td>69</td>
+                        
+                        <td>69</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_3</td>
+                        
+                        <td>History</td>
+                        
+                        <td>28</td>
+                        
+                        <td>28</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_4</td>
+                        
+                        <td>History</td>
+                        
+                        <td>33</td>
+                        
+                        <td>33</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_5</td>
+                        
+                        <td>History</td>
+                        
+                        <td>96</td>
+                        
+                        <td>96</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_6</td>
+                        
+                        <td>History</td>
+                        
+                        <td>70</td>
+                        
+                        <td>70</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_7</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>16</td>
+                        
+                        <td>16</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_8</td>
+                        
+                        <td>History</td>
+                        
+                        <td>22</td>
+                        
+                        <td>22</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_9</td>
+                        
+                        <td>English</td>
+                        
+                        <td>4</td>
+                        
+                        <td>4</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_10</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>64</td>
+                        
+                        <td>64</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_11</td>
+                        
+                        <td>English</td>
+                        
+                        <td>21</td>
+                        
+                        <td>21</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_12</td>
+                        
+                        <td>History</td>
+                        
+                        <td>84</td>
+                        
+                        <td>84</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_13</td>
+                        
+                        <td>History</td>
+                        
+                        <td>14</td>
+                        
+                        <td>14</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_14</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>69</td>
+                        
+                        <td>69</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_15</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>12</td>
+                        
+                        <td>12</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_16</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>18</td>
+                        
+                        <td>18</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_17</td>
+                        
+                        <td>History</td>
+                        
+                        <td>95</td>
+                        
+                        <td>95</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_18</td>
+                        
+                        <td>History</td>
+                        
+                        <td>35</td>
+                        
+                        <td>35</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_19</td>
+                        
+                        <td>History</td>
+                        
+                        <td>47</td>
+                        
+                        <td>47</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_20</td>
+                        
+                        <td>English</td>
+                        
+                        <td>7</td>
+                        
+                        <td>7</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_21</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>60</td>
+                        
+                        <td>60</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_22</td>
+                        
+                        <td>English</td>
+                        
+                        <td>56</td>
+                        
+                        <td>56</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_23</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>28</td>
+                        
+                        <td>28</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_24</td>
+                        
+                        <td>English</td>
+                        
+                        <td>20</td>
+                        
+                        <td>20</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_25</td>
+                        
+                        <td>English</td>
+                        
+                        <td>19</td>
+                        
+                        <td>19</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_26</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>74</td>
+                        
+                        <td>74</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_27</td>
+                        
+                        <td>History</td>
+                        
+                        <td>45</td>
+                        
+                        <td>45</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_28</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>2</td>
+                        
+                        <td>2</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_29</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>84</td>
+                        
+                        <td>84</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_30</td>
+                        
+                        <td>English</td>
+                        
+                        <td>31</td>
+                        
+                        <td>31</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_31</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>37</td>
+                        
+                        <td>37</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_32</td>
+                        
+                        <td>English</td>
+                        
+                        <td>68</td>
+                        
+                        <td>68</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_33</td>
+                        
+                        <td>English</td>
+                        
+                        <td>15</td>
+                        
+                        <td>15</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_34</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>89</td>
+                        
+                        <td>89</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_35</td>
+                        
+                        <td>History</td>
+                        
+                        <td>40</td>
+                        
+                        <td>40</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_36</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>57</td>
+                        
+                        <td>57</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_37</td>
+                        
+                        <td>History</td>
+                        
+                        <td>37</td>
+                        
+                        <td>37</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_38</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>49</td>
+                        
+                        <td>49</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_39</td>
+                        
+                        <td>English</td>
+                        
+                        <td>18</td>
+                        
+                        <td>18</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_40</td>
+                        
+                        <td>History</td>
+                        
+                        <td>76</td>
+                        
+                        <td>76</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_41</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>28</td>
+                        
+                        <td>28</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_42</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>97</td>
+                        
+                        <td>97</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_43</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>42</td>
+                        
+                        <td>42</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_44</td>
+                        
+                        <td>English</td>
+                        
+                        <td>56</td>
+                        
+                        <td>56</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_45</td>
+                        
+                        <td>History</td>
+                        
+                        <td>71</td>
+                        
+                        <td>71</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_46</td>
+                        
+                        <td>English</td>
+                        
+                        <td>76</td>
+                        
+                        <td>76</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_47</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>3</td>
+                        
+                        <td>3</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_48</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>81</td>
+                        
+                        <td>81</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_49</td>
+                        
+                        <td>History</td>
+                        
+                        <td>44</td>
+                        
+                        <td>44</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_50</td>
+                        
+                        <td>History</td>
+                        
+                        <td>51</td>
+                        
+                        <td>51</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_51</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>43</td>
+                        
+                        <td>43</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_52</td>
+                        
+                        <td>History</td>
+                        
+                        <td>94</td>
+                        
+                        <td>94</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_53</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>95</td>
+                        
+                        <td>95</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_54</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>39</td>
+                        
+                        <td>39</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_55</td>
+                        
+                        <td>History</td>
+                        
+                        <td>97</td>
+                        
+                        <td>97</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_56</td>
+                        
+                        <td>English</td>
+                        
+                        <td>56</td>
+                        
+                        <td>56</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_57</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>79</td>
+                        
+                        <td>79</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_58</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>96</td>
+                        
+                        <td>96</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_59</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>36</td>
+                        
+                        <td>36</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_60</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>12</td>
+                        
+                        <td>12</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_61</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>7</td>
+                        
+                        <td>7</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_62</td>
+                        
+                        <td>English</td>
+                        
+                        <td>42</td>
+                        
+                        <td>42</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_63</td>
+                        
+                        <td>History</td>
+                        
+                        <td>75</td>
+                        
+                        <td>75</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_64</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>9</td>
+                        
+                        <td>9</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_65</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>17</td>
+                        
+                        <td>17</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_66</td>
+                        
+                        <td>English</td>
+                        
+                        <td>23</td>
+                        
+                        <td>23</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_67</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>85</td>
+                        
+                        <td>85</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_68</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>32</td>
+                        
+                        <td>32</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_69</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>54</td>
+                        
+                        <td>54</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_70</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>43</td>
+                        
+                        <td>43</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_71</td>
+                        
+                        <td>History</td>
+                        
+                        <td>68</td>
+                        
+                        <td>68</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_72</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>48</td>
+                        
+                        <td>48</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_73</td>
+                        
+                        <td>History</td>
+                        
+                        <td>78</td>
+                        
+                        <td>78</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_74</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>15</td>
+                        
+                        <td>15</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_75</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>40</td>
+                        
+                        <td>40</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_76</td>
+                        
+                        <td>History</td>
+                        
+                        <td>85</td>
+                        
+                        <td>85</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_77</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>16</td>
+                        
+                        <td>16</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_78</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>25</td>
+                        
+                        <td>25</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_79</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>27</td>
+                        
+                        <td>27</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_80</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>93</td>
+                        
+                        <td>93</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_81</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>93</td>
+                        
+                        <td>93</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_82</td>
+                        
+                        <td>History</td>
+                        
+                        <td>21</td>
+                        
+                        <td>21</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_83</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>31</td>
+                        
+                        <td>31</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_84</td>
+                        
+                        <td>History</td>
+                        
+                        <td>29</td>
+                        
+                        <td>29</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_85</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>26</td>
+                        
+                        <td>26</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_86</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>51</td>
+                        
+                        <td>51</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_87</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>1</td>
+                        
+                        <td>1</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_88</td>
+                        
+                        <td>English</td>
+                        
+                        <td>93</td>
+                        
+                        <td>93</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_89</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>47</td>
+                        
+                        <td>47</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_90</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>91</td>
+                        
+                        <td>91</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_91</td>
+                        
+                        <td>English</td>
+                        
+                        <td>1</td>
+                        
+                        <td>1</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_92</td>
+                        
+                        <td>English</td>
+                        
+                        <td>81</td>
+                        
+                        <td>81</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_93</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>94</td>
+                        
+                        <td>94</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_94</td>
+                        
+                        <td>Science</td>
+                        
+                        <td>30</td>
+                        
+                        <td>30</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_95</td>
+                        
+                        <td>Computer</td>
+                        
+                        <td>97</td>
+                        
+                        <td>97</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_96</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>10</td>
+                        
+                        <td>10</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_97</td>
+                        
+                        <td>Math</td>
+                        
+                        <td>81</td>
+                        
+                        <td>81</td>
+                        
+                        <td>Pass</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_98</td>
+                        
+                        <td>History</td>
+                        
+                        <td>19</td>
+                        
+                        <td>19</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_99</td>
+                        
+                        <td>History</td>
+                        
+                        <td>28</td>
+                        
+                        <td>28</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                    <tr>
+                        
+                        <td>Student_100</td>
+                        
+                        <td>English</td>
+                        
+                        <td>3</td>
+                        
+                        <td>3</td>
+                        
+                        <td>Fail</td>
+                        
+                    </tr>
+                    
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/dataTables.buttons.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.bootstrap5.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.html5.min.js"></script>
+<script src="https://cdn.datatables.net/buttons/2.4.1/js/buttons.print.min.js"></script>
+
+<script>
+    $(document).ready(function() {
+        var table = $('#dataTable').DataTable({
+            responsive: true,
+            dom: '<"d-flex justify-content-between align-items-center mb-3"Bf>rt<"d-flex justify-content-between align-items-center mt-3"ip>',
+            buttons: [
+                {
+                    extend: 'excelHtml5',
+                    className: 'btn btn-success btn-sm',
+                    text: '<i class="fas fa-file-excel me-1"></i> Excel'
+                },
+                {
+                    extend: 'csvHtml5',
+                    className: 'btn btn-info btn-sm',
+                    text: '<i class="fas fa-file-csv me-1"></i> CSV'
+                },
+                {
+                    extend: 'print',
+                    className: 'btn btn-secondary btn-sm',
+                    text: '<i class="fas fa-print me-1"></i> Print'
+                }
+            ],
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records..."
+            },
+            drawCallback: function() {
+                // Highlight search results
+                var api = this.api();
+                var searchVal = api.search();
+                if (searchVal) {
+                    $('#dataTable tbody td').each(function() {
+                        var text = $(this).text();
+                        var regex = new RegExp('(' + searchVal + ')', 'gi');
+                        if (text.match(regex)) {
+                            $(this).html(text.replace(regex, '<span class="highlight">$1</span>'));
+                        }
+                    });
+                }
+            }
+        });
+
+        // Initialize Theme from localStorage
+        const savedTheme = localStorage.getItem('theme') || 'light';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        updateThemeIcon(savedTheme);
+    });
+
+    function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        document.documentElement.setAttribute('data-theme', newTheme);
+        localStorage.setItem('theme', newTheme);
+        updateThemeIcon(newTheme);
+    }
+
+    function updateThemeIcon(theme) {
+        const icon = document.getElementById('themeIcon');
+        if (theme === 'dark') {
+            icon.classList.remove('fa-moon');
+            icon.classList.add('fa-sun');
+        } else {
+            icon.classList.remove('fa-sun');
+            icon.classList.add('fa-moon');
+        }
+    }
+</script>
+
+</body>
+</html>
