@@ -234,7 +234,7 @@
                 <i class="fas fa-sync-alt fa-spin"></i>
             </div>
             <h3 class="fw-bold mb-2">Sync Completed</h3>
-            <p class="text-muted mb-4">Last meter update data status<br><span class="fw-bold text-primary">16:17 10-04-2026</span></p>
+            <p class="text-muted mb-4">Last meter update data status<br><span class="fw-bold text-primary">16:21 10-04-2026</span></p>
             <button type="button" class="btn btn-primary w-100 py-3 rounded-4 fw-bold" data-bs-dismiss="modal" style="background: var(--primary-gradient); border: none;">OK, View Dashboard</button>
         </div>
     </div>
@@ -245,7 +245,7 @@
     <div class="glass-header d-flex justify-content-between align-items-center">
         <div>
             <h1 class="display-5 fw-bold mb-1"><i class="fas fa-microchip me-3"></i>Data Dashboard</h1>
-            <p class="mb-0 opacity-75"><i class="far fa-calendar-alt me-2"></i>Last Synchronized: <span id="lastUpdated">16:17 10-04-2026</span></p>
+            <p class="mb-0 opacity-75"><i class="far fa-calendar-alt me-2"></i>Last Synchronized: <span id="lastUpdated">16:21 10-04-2026</span></p>
         </div>
         <div class="theme-toggle" onclick="toggleTheme()" title="Switch Theme">
             <i class="fas fa-moon" id="themeIcon"></i>
@@ -2733,7 +2733,21 @@
 <script src="https://cdn.jsdelivr.net/npm/mark.js@8.11.1/dist/jquery.mark.min.js"></script>
 <script>
     function format(d) {
-        const details = JSON.parse(d);
+        // Handle both string and object data
+        let details = d;
+        if (typeof d === 'string') {
+            try {
+                details = JSON.parse(d);
+            } catch (e) {
+                console.error("Error parsing details:", e);
+                return '<div class="details-child">Error loading details</div>';
+            }
+        }
+        
+        if (!details || Object.keys(details).length === 0) {
+            return '<div class="details-child">No additional details available</div>';
+        }
+
         let gridHtml = '<div class="details-child"><div class="details-grid">';
         for (const [key, value] of Object.entries(details)) {
             gridHtml += `
