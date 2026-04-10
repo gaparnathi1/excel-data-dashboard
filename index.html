@@ -102,6 +102,13 @@
         .table > tbody > tr:hover { background-color: rgba(79, 70, 229, 0.05) !important; }
         [data-theme="dark"] .table > tbody > tr:hover { background-color: rgba(255, 255, 255, 0.03) !important; }
         
+        /* Prevent clipping */
+        .table th, .table td { 
+            white-space: nowrap !important; 
+            padding: 1rem !important;
+            vertical-align: middle;
+        }
+        
         .status-badge {
             padding: 0.4rem 1rem;
             border-radius: 9999px;
@@ -234,7 +241,7 @@
                 <i class="fas fa-sync-alt fa-spin"></i>
             </div>
             <h3 class="fw-bold mb-2">Sync Completed</h3>
-            <p class="text-muted mb-4">Last meter update data status<br><span class="fw-bold text-primary">16:22 10-04-2026</span></p>
+            <p class="text-muted mb-4">Last meter update data status<br><span class="fw-bold text-primary">16:26 10-04-2026</span></p>
             <button type="button" class="btn btn-primary w-100 py-3 rounded-4 fw-bold" data-bs-dismiss="modal" style="background: var(--primary-gradient); border: none;">OK, View Dashboard</button>
         </div>
     </div>
@@ -245,7 +252,7 @@
     <div class="glass-header d-flex justify-content-between align-items-center">
         <div>
             <h1 class="display-5 fw-bold mb-1"><i class="fas fa-microchip me-3"></i>Data Dashboard</h1>
-            <p class="mb-0 opacity-75"><i class="far fa-calendar-alt me-2"></i>Last Synchronized: <span id="lastUpdated">16:22 10-04-2026</span></p>
+            <p class="mb-0 opacity-75"><i class="far fa-calendar-alt me-2"></i>Last Synchronized: <span id="lastUpdated">16:26 10-04-2026</span></p>
         </div>
         <div class="theme-toggle" onclick="toggleTheme()" title="Switch Theme">
             <i class="fas fa-moon" id="themeIcon"></i>
@@ -257,10 +264,16 @@
             <table id="mainTable" class="table table-hover w-100">
                 <thead>
                     <tr>
-                        <th></th> <!-- Expand Icon -->
+                        <th style="width: 40px;"></th>
                         <th>Division</th>
                         <th>Generator Name</th>
                         <th>Status</th>
+                    </tr>
+                    <tr class="filter-row">
+                        <th></th>
+                        <th><input type="text" class="column-search" placeholder="Filter Division"></th>
+                        <th><input type="text" class="column-search" placeholder="Filter Name"></th>
+                        <th><input type="text" class="column-search" placeholder="Filter Status"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -2708,14 +2721,6 @@
                     </tr>
                     
                 </tbody>
-                <tfoot>
-                    <tr>
-                        <td></td>
-                        <td><input type="text" class="column-search" placeholder="Filter Division"></td>
-                        <td><input type="text" class="column-search" placeholder="Filter Name"></td>
-                        <td><input type="text" class="column-search" placeholder="Filter Status"></td>
-                    </tr>
-                </tfoot>
             </table>
         </div>
     </div>
@@ -2765,7 +2770,7 @@
         const table = $('#mainTable').DataTable({
             responsive: true,
             pageLength: 25,
-            dom: '<"d-flex justify-content-between align-items-center mb-4"f>rt<"d-flex justify-content-between align-items-center mt-4"lp>',
+            dom: '<"d-flex justify-content-between align-items-center mb-4"lf>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
             language: {
                 search: "",
                 searchPlaceholder: "🔍 Search everything...",
@@ -2773,8 +2778,13 @@
             },
             order: [[1, 'asc']],
             columnDefs: [
-                { orderable: false, targets: 0 }
+                { orderable: false, targets: [0, 1, 2, 3] } // Disable sorting on header row clicks if filters are there, or handle it
             ]
+        });
+        
+        // Fix sorting issue when clicking filter inputs
+        $('.filter-row input').on('click', function(e) {
+            e.stopPropagation();
         });
 
         // Add expand/collapse logic
@@ -2801,10 +2811,10 @@
             body.mark(table.search());
         });
 
-        // Column Filtering
+        // Column Filtering (Updated for header row)
         table.columns().every(function(index) {
             const that = this;
-            $(`tfoot tr td:eq(${index}) input`).on('keyup change clear', function() {
+            $(`.filter-row th:eq(${index}) input`).on('keyup change clear', function() {
                 if (that.search() !== this.value) {
                     that.search(this.value).draw();
                 }
