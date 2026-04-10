@@ -104,11 +104,18 @@
         
         /* Prevent clipping */
         .table th, .table td { 
-            padding: 1rem !important;
+            padding: 0.8rem 0.5rem !important;
             vertical-align: middle;
         }
         @media (min-width: 992px) {
-            .table th, .table td { white-space: nowrap !important; }
+            .table th, .table td { white-space: nowrap !important; padding: 1rem !important; }
+        }
+        
+        .table-container { 
+            border-radius: 16px; 
+            overflow-x: auto; 
+            margin-top: 1rem;
+            -webkit-overflow-scrolling: touch;
         }
         
         .status-badge {
@@ -232,7 +239,7 @@
                 <i class="fas fa-sync-alt fa-spin"></i>
             </div>
             <h3 class="fw-bold mb-2">Sync Completed</h3>
-            <p class="text-muted mb-4">Last meter update data status<br><span class="fw-bold text-primary">16:31 10-04-2026</span></p>
+            <p class="text-muted mb-4">Last meter update data status<br><span class="fw-bold text-primary">16:33 10-04-2026</span></p>
             <button type="button" class="btn btn-primary w-100 py-3 rounded-4 fw-bold" data-bs-dismiss="modal" style="background: var(--primary-gradient); border: none;">OK, View Dashboard</button>
         </div>
     </div>
@@ -243,7 +250,7 @@
     <div class="glass-header d-flex justify-content-between align-items-center">
         <div>
             <h1 class="display-5 fw-bold mb-1"><i class="fas fa-microchip me-3"></i>Data Dashboard</h1>
-            <p class="mb-0 opacity-75"><i class="far fa-calendar-alt me-2"></i>Last Synchronized: <span id="lastUpdated">16:31 10-04-2026</span></p>
+            <p class="mb-0 opacity-75"><i class="far fa-calendar-alt me-2"></i>Last Synchronized: <span id="lastUpdated">16:33 10-04-2026</span></p>
         </div>
         <div class="theme-toggle" onclick="toggleTheme()" title="Switch Theme">
             <i class="fas fa-moon" id="themeIcon"></i>
@@ -2753,7 +2760,7 @@
 
     $(document).ready(function() {
         const table = $('#mainTable').DataTable({
-            responsive: true,
+            responsive: false,
             pageLength: 25,
             dom: '<"d-flex justify-content-between align-items-center mb-4"lf>rt<"d-flex justify-content-between align-items-center mt-4"ip>',
             language: {
