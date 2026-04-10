@@ -116,6 +116,41 @@
             --bs-table-accent-bg: rgba(255, 255, 255, 0.05);
         }
 
+        /* Dark Mode Specific Fixes */
+        [data-theme="dark"] .dataTables_info,
+        [data-theme="dark"] .dataTables_length,
+        [data-theme="dark"] .dataTables_filter label,
+        [data-theme="dark"] .dataTables_paginate .paginate_button,
+        [data-theme="dark"] .page-link {
+            color: var(--text-color) !important;
+        }
+
+        [data-theme="dark"] .dataTables_filter input {
+            background-color: #2d2d2d !important;
+            color: white !important;
+            border: 1px solid #444 !important;
+        }
+
+        [data-theme="dark"] .table thead th {
+            background-color: #2d2d2d;
+            color: white;
+            border-bottom: 2px solid #444;
+        }
+
+        [data-theme="dark"] .table tbody td {
+            border-color: #333;
+        }
+
+        [data-theme="dark"] .page-item.disabled .page-link {
+            background-color: #1e1e1e;
+            border-color: #333;
+            color: #666 !important;
+        }
+
+        [data-theme="dark"] .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
         .dt-buttons .btn {
             border-radius: 8px;
             margin-right: 5px;
@@ -151,7 +186,7 @@
             <i class="fas fa-history fa-3x text-primary"></i>
         </div>
         <h4>Last Updated</h4>
-        <p class="lead mb-0">11:06 10-04-2026</p>
+        <p class="lead mb-0">11:21 10-04-2026</p>
       </div>
       <div class="modal-footer border-0">
         <button type="button" class="btn btn-primary w-100" data-bs-dismiss="modal">OK</button>
@@ -166,7 +201,7 @@
             <div>
                 <h2 class="mb-1"><i class="fas fa-table me-2"></i>Data Dashboard</h2>
                 <div class="update-info">
-                    <i class="far fa-clock me-1"></i>Last Updated: <span id="lastUpdated">11:06 10-04-2026</span>
+                    <i class="far fa-clock me-1"></i>Last Updated: <span id="lastUpdated">11:21 10-04-2026</span>
                 </div>
             </div>
             <div class="d-flex align-items-center">
