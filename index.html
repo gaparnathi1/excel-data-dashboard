@@ -182,12 +182,23 @@
         /* Column Search Styles */
         .column-search {
             width: 100%;
-            padding: 4px 8px;
-            font-size: 0.7rem;
-            border-radius: 6px;
+            padding: 8px 12px;
+            font-size: 0.8rem;
+            border-radius: 10px;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text-color);
+            font-weight: 400;
+            transition: all 0.3s ease;
+        }
+        .column-search:focus {
+            outline: none;
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        .filter-row th {
+            padding: 0.5rem 1rem 1rem 1rem !important;
+            border: none !important;
         }
 
         /* Animations */
